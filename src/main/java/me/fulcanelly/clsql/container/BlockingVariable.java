@@ -10,6 +10,10 @@ public class BlockingVariable<T> {
     boolean done = false;
     T cache;
 
+    public boolean haveValue() {
+        return done;
+    } 
+
     public void setValue(T val) {
         value.add(val);
         cache = val;
