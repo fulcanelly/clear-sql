@@ -26,12 +26,19 @@ public class ChainAsyncTask<K> implements AsyncTask<K> {
 
     @Override
     strictfp public void execute() {
-        result.setValue(supplier.get());
+        if (!result.haveValue()) {
+            result.setValue(supplier.get());
+        }
     }
 
     @Override
     public K waitForResult() {
         return result.getValue();
+    }
+
+    public K obtainResult() {
+        execute();
+        return waitForResult();
     }
 
     @Override

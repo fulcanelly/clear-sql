@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 public interface AsyncTask<T> extends Task {
     T waitForResult();
+    T obtainResult();
 
     void andThenSilently(Consumer<T> consumer);
     
