@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.*;
 
 import org.apache.commons.lang.ClassUtils;
 
@@ -115,11 +116,11 @@ public class SQLQueryHandler implements Stopable {
     }
 
     @SneakyThrows
-    public Map<String, Object> safeParseOne(ResultSet set) {
+    public Optional<Map<String, Object>> safeParseOne(ResultSet set) {
         if (set.next()) {
-            return parseMapOfResultSet(set);
+            return Optional.of(parseMapOfResultSet(set));
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
