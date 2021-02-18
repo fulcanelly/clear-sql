@@ -1,6 +1,6 @@
 package me.fulcanelly.clsql.databse.tasks;
 
-public interface RequestExecutor<T> {
-    T process(String q, Object[] data);
+public interface RequestExecutor<G, T> {
+    T process(G q, Object[] data);
 }
 

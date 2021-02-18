@@ -4,10 +4,10 @@ import me.fulcanelly.clsql.async.ActorTemplate;
 import me.fulcanelly.clsql.async.tasks.ChainAsyncTask;
 import me.fulcanelly.clsql.async.tasks.Task;
 
-public class AsyncSQLTask<T> extends ChainAsyncTask<T> {
+public class AsyncSQLTask<G, T> extends ChainAsyncTask<T> {
 
-    public AsyncSQLTask(String query, Object[] args, RequestExecutor<T> executor, ActorTemplate<Task> worker) {
-        super(() -> executor.process(query, args), worker);
+    public AsyncSQLTask(G q, Object[] args, RequestExecutor<G, T> executor, ActorTemplate<Task> worker) {
+        super(() -> executor.process(q, args), worker);
     }
 
 }
