@@ -29,7 +29,11 @@ public abstract class ActorTemplate<T> extends Thread implements Stopable {
             if (last.isSignal()) {
                 return;
             } else {
-                consume(last.get());
+                try {
+                    consume(last.get());
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
