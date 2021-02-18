@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import java.util.*;
 
 import org.apache.commons.lang.ClassUtils;
+import org.bukkit.Bukkit;
 
 import lombok.SneakyThrows;
 import me.fulcanelly.clsql.async.AsyncActorEngine;
@@ -40,7 +41,7 @@ public class SQLQueryHandler implements Stopable {
 
     void logString(String to_log) {
         if (log) {
-            System.out.println("[" + Thread.currentThread() + "] "+ ChatColor.BLUE + to_log);
+            Bukkit.getLogger().info(ChatColor.BLUE + to_log);
         }
     }
 
