@@ -1,11 +1,12 @@
 package me.fulcanelly.clsql.async;
 
-
+import java.sql.DriverManager;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
 
 import lombok.SneakyThrows;
+import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.clsql.stop.*;
 
 public abstract class ActorTemplate<T> extends Thread implements Stopable {
@@ -46,4 +47,10 @@ public abstract class ActorTemplate<T> extends Thread implements Stopable {
         }
     }
     
+    @SneakyThrows
+    public static void main(String[] args) {
+        var conn = DriverManager.getConnection("jdbc:h2:./");
+        var sqh = new SQLQueryHandler(conn, true);
+        sqh.syncExecuteUpdate("create table loh(a, b)");
+    }
 }
