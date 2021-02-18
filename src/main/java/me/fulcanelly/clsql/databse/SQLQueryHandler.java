@@ -116,7 +116,17 @@ public class SQLQueryHandler implements Stopable {
         this.setVars(pstmt, args);
         return pstmt.executeQuery();
     }
-    
+
+    public void executePreparedUpdate(PreparedStatement pstmt, Object... args) {
+        new AsyncSQLTask<>(pstmt, args, this::syncExecutePreparedUpdate, engine)
+            .addToQueue();
+    }
+
+    public AsyncTask<ResultSet> executePreparedQuery(PreparedStatement pstmt, Object... args) {
+        return new AsyncSQLTask<>(pstmt, args, this::syncExecutePreparedQuery, engine)
+            .addToQueue();
+    }
+
     public void execute(String query, Object... args) {
         new AsyncSQLTask<>(query, args, this::syncExecuteUpdate, engine)
             .addToQueue();
