@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import java.util.*;
 
 import org.apache.commons.lang.ClassUtils;
+import org.bukkit.Bukkit;
 
 import lombok.SneakyThrows;
 import me.fulcanelly.clsql.async.AsyncActorEngine;
@@ -40,7 +41,7 @@ public class SQLQueryHandler implements Stopable {
 
     void logString(String to_log) {
         if (log) {
-            System.out.println("[" + Thread.currentThread() + "] "+ ChatColor.BLUE + to_log);
+            Bukkit.getLogger().info(ChatColor.BLUE + to_log);
         }
     }
 
@@ -105,7 +106,29 @@ public class SQLQueryHandler implements Stopable {
             .executeQuery();
     }
 
-    public void execute(String query, Object... args) {
+    @SneakyThrows
+    public int syncExecutePreparedUpdate(PreparedStatement pstmt, Object ...args) {
+        this.setVars(pstmt, args);
+        return pstmt.executeUpdate();
+    }
+        
+    @SneakyThrows
+    public ResultSet syncExecutePreparedQuery(PreparedStatement pstmt, Object ...args) {
+        this.setVars(pstmt, args);
+        return pstmt.executeQuery();
+    }
+
+    public void executePreparedUpdate(PreparedStatement pstmt, Object... args) {
+        new AsyncSQLTask<>(pstmt, args, this::syncExecutePreparedUpdate, engine)
+            .addToQueue();
+    }
+
+    public AsyncTask<ResultSet> executePreparedQuery(PreparedStatement pstmt, Object... args) {
+        return new AsyncSQLTask<>(pstmt, args, this::syncExecutePreparedQuery, engine)
+            .addToQueue();
+    }
+
+    public void executeUpdate(String query, Object... args) {
         new AsyncSQLTask<>(query, args, this::syncExecuteUpdate, engine)
             .addToQueue();
     }

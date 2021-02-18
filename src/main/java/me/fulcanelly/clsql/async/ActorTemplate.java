@@ -1,10 +1,12 @@
 package me.fulcanelly.clsql.async;
 
-
+import java.sql.DriverManager;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Stream;
 
 import lombok.SneakyThrows;
+import me.fulcanelly.clsql.databse.SQLQueryHandler;
 import me.fulcanelly.clsql.stop.*;
 
 public abstract class ActorTemplate<T> extends Thread implements Stopable {
@@ -22,16 +24,33 @@ public abstract class ActorTemplate<T> extends Thread implements Stopable {
         queue.add(new StopSignalOrData<>(data));
     }
 
+    public void carefulConsume(T data) {
+        try {
+            consume(data);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @SneakyThrows
     public void run() {
         while (true) {
-            StopSignalOrData<T> last = queue.take();
-            if (last.isSignal()) {
+            var res = Stream.of(queue.take())
+                .filter(it -> !it.isSignal())
+                .map(it -> it.get())
+                .peek(this::carefulConsume)
+                .findAny();
+
+            if (res.isEmpty()) {
                 return;
-            } else {
-                consume(last.get());
             }
         }
     }
     
+    @SneakyThrows
+    public static void main(String[] args) {
+        var conn = DriverManager.getConnection("jdbc:h2:./");
+        var sqh = new SQLQueryHandler(conn, true);
+        sqh.syncExecuteUpdate("create table loh(a, b)");
+    }
 }
