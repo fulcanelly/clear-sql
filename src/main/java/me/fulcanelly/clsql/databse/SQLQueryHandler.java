@@ -106,13 +106,13 @@ public class SQLQueryHandler implements Stopable {
     }
 
     @SneakyThrows
-    public int syncExecutePrepearedUpdate(PreparedStatement pstmt, Object ...args) {
+    public int syncExecutePreparedUpdate(PreparedStatement pstmt, Object ...args) {
         this.setVars(pstmt, args);
         return pstmt.executeUpdate();
     }
         
     @SneakyThrows
-    public ResultSet syncExecutePrepearedQuery(PreparedStatement pstmt, Object ...args) {
+    public ResultSet syncExecutePreparedQuery(PreparedStatement pstmt, Object ...args) {
         this.setVars(pstmt, args);
         return pstmt.executeQuery();
     }
